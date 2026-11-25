@@ -81,6 +81,15 @@ if (hasGsap){
     /* o'qish chizig'i */
     gsap.to('#progress', { scaleX: 1, ease: 'none', scrollTrigger: { start: 0, end: 'max', scrub: .3 } });
 
+    /* aurora: sekin suzadi va skroll bilan siljiydi */
+    [['.b1', 60, 40, 17], ['.b2', -70, 50, 21], ['.b3', 50, -60, 19], ['.b4', -40, -40, 23]].forEach(([sel, x, y, d]) => {
+      gsap.to(sel, { x, y, duration: d, repeat: -1, yoyo: true, ease: 'sine.inOut' });
+    });
+    gsap.to('.b1', { yPercent: 36, ease: 'none', scrollTrigger: { start: 0, end: 'max', scrub: 1.2 } });
+    gsap.to('.b2', { yPercent: 55, xPercent: -12, ease: 'none', scrollTrigger: { start: 0, end: 'max', scrub: 1.2 } });
+    gsap.to('.b3', { yPercent: -45, ease: 'none', scrollTrigger: { start: 0, end: 'max', scrub: 1.2 } });
+    gsap.to('.b4', { yPercent: -60, xPercent: 18, ease: 'none', scrollTrigger: { start: 0, end: 'max', scrub: 1.2 } });
+
     /* hero ketma-ketligi */
     const tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
     tl.from('.hero .eyebrow', { y: 16, opacity: 0, duration: .6 })
@@ -90,7 +99,9 @@ if (hasGsap){
       .from('#paper', { y: 70, rotation: -8, opacity: 0, duration: 1.1, ease: 'power4.out' }, .25)
       .from('#paper .ln', { scaleX: 0, transformOrigin: '0 50%', stagger: .07, duration: .55 }, '-=.6')
       .from('.stamp', { scale: 2.4, rotation: -28, opacity: 0, duration: .5, ease: 'back.out(2.2)' }, '-=.1')
-      .from('.stat', { y: 22, opacity: 0, stagger: .1, duration: .6 }, '-=.6');
+      .from('.stat', { y: 22, opacity: 0, stagger: .1, duration: .6 }, '-=.6')
+      .from('.fchip', { y: 30, opacity: 0, scale: .8, stagger: .15, duration: .8, ease: 'back.out(2)' }, 1.4);
+    gsap.utils.toArray('.fchip').forEach((c, i) => gsap.to(c, { y: i ? 6 : -6, duration: 2.6 + i * .5, repeat: -1, yoyo: true, ease: 'sine.inOut', delay: 2.4 }));
 
     /* raqamlar sanaladi */
     document.querySelectorAll('[data-count]').forEach(el => {
@@ -117,7 +128,7 @@ if (hasGsap){
     }});
 
     /* sarlavhalar va bo'lim matni */
-    gsap.utils.toArray('.art-h, .art-p, .calc, .rev, .src, .rule-note').forEach(el => {
+    gsap.utils.toArray('.art-h, .art-p, .calc, .rev, .src, .rule-note, .cbox').forEach(el => {
       gsap.from(el, { y: 34, opacity: .2, duration: .9, ease: 'power3.out', scrollTrigger: { trigger: el, start: 'top 92%', once: true } });
     });
 
@@ -149,6 +160,17 @@ if (hasGsap){
 
     /* sichqoncha bor qurilmalarda: yog'du, qiyalik, magnit tugmalar */
     if (fine){
+      const ring = document.getElementById('ring');
+      const rx = gsap.quickTo(ring, 'x', { duration: .35, ease: 'power3' }), ry = gsap.quickTo(ring, 'y', { duration: .35, ease: 'power3' });
+      const onAny = e => { ring.classList.add('on'); rx(e.clientX); ry(e.clientY); ring.classList.toggle('hot', !!e.target.closest('a, button, label, .q, .svc')); };
+      window.addEventListener('pointermove', onAny);
+      cleanups.push(() => { window.removeEventListener('pointermove', onAny); ring.classList.remove('on'); });
+      document.querySelectorAll('.stats, .svc, .calc, .rev, .q, .chip-note, .cbox').forEach(el => {
+        el.classList.add('shine');
+        const mv = e => { const r = el.getBoundingClientRect(); el.style.setProperty('--sx', ((e.clientX - r.left) / r.width * 100) + '%'); el.style.setProperty('--sy', ((e.clientY - r.top) / r.height * 100) + '%'); };
+        el.addEventListener('pointermove', mv);
+        cleanups.push(() => { el.removeEventListener('pointermove', mv); el.classList.remove('shine'); });
+      });
       const hero = document.querySelector('.hero'), glow = document.getElementById('glow');
       const gx = gsap.quickTo(glow, 'x', { duration: .6, ease: 'power3' }), gy = gsap.quickTo(glow, 'y', { duration: .6, ease: 'power3' });
       gsap.set(glow, { opacity: 1 });
