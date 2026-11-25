@@ -75,6 +75,27 @@ document.querySelectorAll('input[name="tur"], #urgent').forEach(i => i.addEventL
 shown = (range(current().key, false) || null);
 renderCalc();
 
+/* vaziyat yordamchisi */
+(function(){
+  const finder = document.getElementById('finder'); if (!finder) return;
+  const fout = document.getElementById('fout'), btns = [...finder.querySelectorAll('.fbtn')];
+  const clear = () => { btns.forEach(x => x.setAttribute('aria-pressed', 'false')); fout.hidden = true; fout.textContent = ''; };
+  btns.forEach(b => b.addEventListener('click', () => {
+    if (b.getAttribute('aria-pressed') === 'true'){ clear(); return; }
+    btns.forEach(x => x.setAttribute('aria-pressed', 'false'));
+    b.setAttribute('aria-pressed', 'true');
+    const radio = document.getElementById('t-' + b.dataset.doc);
+    if (radio && !radio.checked){ radio.checked = true; renderCalc(); }
+    fout.innerHTML = document.getElementById(b.dataset.fo).innerHTML;
+    fout.hidden = false;
+    if (hasGsap && !reduceMq.matches) gsap.from(fout.children, { y: 12, opacity: 0, duration: .45, stagger: .06, ease: 'power3.out', clearProps: 'all' });
+  }));
+  document.querySelectorAll('input[name="tur"]').forEach(i => i.addEventListener('change', () => {
+    const p = btns.find(x => x.getAttribute('aria-pressed') === 'true');
+    if (p && p.dataset.doc !== i.value) clear();
+  }));
+})();
+
 /* til almashtirganda bo'lim (#) saqlansin */
 document.querySelectorAll('.lang a').forEach(a => a.addEventListener('click', () => { if (location.hash) a.href = a.getAttribute('href').split('#')[0] + location.hash; }));
 

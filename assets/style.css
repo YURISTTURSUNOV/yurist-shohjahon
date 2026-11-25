@@ -69,7 +69,7 @@ nav.menu a:hover{color:var(--paper)}
 .paper-wrap{perspective:1100px;justify-self:center;width:min(100%,380px)}
 .paper{position:relative;background:#f1ebd9;color:#14203a;border-radius:6px;padding:30px 28px 34px;box-shadow:0 30px 60px -20px rgba(0,0,0,.6),0 0 0 1px rgba(255,255,255,.05);transform:rotate(-2deg);transform-style:preserve-3d}
 .paper .doc-t{font-family:var(--display);font-size:38px;letter-spacing:.06em;text-align:center;line-height:1}
-.paper .doc-s{text-align:center;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#14203a99;margin:6px 0 22px}
+.paper .doc-s{text-align:center;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:#14203acc;margin:6px 0 22px}
 .paper .row{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#14203a99;margin:14px 0 6px}
 .ln{display:block;height:8px;border-radius:4px;background:#14203a24;margin:9px 0}
 .ln.a{width:100%}.ln.b{width:92%}.ln.c{width:78%}.ln.d{width:96%}.ln.e{width:54%}
@@ -184,18 +184,18 @@ footer p+p{margin-top:10px}
 .grain{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.09;mix-blend-mode:overlay;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
 main,footer{position:relative;z-index:2}
 
-.top .wrap,.stats,.svc,.calc,.chip-note,.rev,.q,.cbox,.fchip{
+.top .wrap,.stats,.svc,.calc,.finder,.chip-note,.rev,.q,.cbox,.fchip{
   background:linear-gradient(160deg,rgba(255,255,255,.10),rgba(255,255,255,.04));
   -webkit-backdrop-filter:blur(var(--blur)) saturate(1.5);backdrop-filter:blur(var(--blur)) saturate(1.5);
   border:1px solid rgba(255,255,255,.14);
   box-shadow:0 24px 60px -28px rgba(0,0,0,.65),inset 0 1px 0 rgba(255,255,255,.22),inset 0 -1px 0 rgba(255,255,255,.04)}
-.stats,.svc,.calc,.chip-note,.rev,.q,.cbox{position:relative}
+.stats,.calc,.finder,.chip-note,.rev,.q,.cbox{position:relative}
 .shine::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;background:radial-gradient(320px circle at var(--sx,50%) var(--sy,0%),rgba(255,255,255,.14),rgba(255,255,255,0) 62%);opacity:0;transition:opacity .35s}
 .shine:hover::after{opacity:1}
 @supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){
-  .top .wrap,.stats,.svc,.calc,.chip-note,.rev,.q,.cbox,.fchip{background:rgba(16,34,57,.95)}}
+  .top .wrap,.stats,.svc,.calc,.finder,.chip-note,.rev,.q,.cbox,.fchip{background:rgba(16,34,57,.95)}}
 @media (prefers-reduced-transparency:reduce){
-  .top .wrap,.stats,.svc,.calc,.chip-note,.rev,.q,.cbox,.fchip{background:rgba(16,34,57,.96);-webkit-backdrop-filter:none;backdrop-filter:none}.grain{display:none}}
+  .top .wrap,.stats,.svc,.calc,.finder,.chip-note,.rev,.q,.cbox,.fchip{background:rgba(16,34,57,.96);-webkit-backdrop-filter:none;backdrop-filter:none}.grain{display:none}}
 @media (max-width:700px){:root{--blur:12px}}
 
 .ring{position:fixed;left:0;top:0;width:38px;height:38px;margin:-19px 0 0 -19px;border:1.5px solid rgba(212,175,55,.6);border-radius:50%;pointer-events:none;z-index:95;opacity:0;transition:opacity .3s,background-color .25s}
@@ -294,6 +294,27 @@ footer{border-top-color:rgba(255,255,255,.1);background:rgba(7,15,29,.55);-webki
 @media (max-width:470px){.brand span{display:none}.lang a{padding:0 8px}}
 /* kirill: Instrument Serif'da kirill yo'q (Cormorant ishlatiladi), shuning uchun rus sarlavhasi biroz kichikroq */
 html[lang=ru] .hero h1{font-size:clamp(44px,7.4vw,108px)}
+
+/* vaziyat yordamchisi */
+.finder{margin-bottom:22px;padding:clamp(18px,3vw,30px);border-radius:26px}
+.finder h3{font:400 clamp(24px,2.8vw,34px)/1.12 var(--display);margin-bottom:8px}
+.finder .fhint{color:var(--muted);font-size:15px;max-width:46em;margin-bottom:16px}
+.fbtn{min-height:46px;padding:10px 18px;border:1px solid rgba(255,255,255,.16);border-radius:999px;background:rgba(255,255,255,.05);color:var(--paper);font:500 15px/1.25 var(--body);text-align:left;cursor:pointer;transition:background-color .2s,border-color .2s,color .2s}
+.fbtn:hover{border-color:var(--gold);background:rgba(255,255,255,.1)}
+.fbtn[aria-pressed=true]{background:linear-gradient(135deg,#f0cf62,#d4af37);border-color:transparent;color:#0a1628;font-weight:600}
+.fbtn:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+.fout{margin-top:20px;padding-top:18px;border-top:1px solid rgba(255,255,255,.12);display:grid;gap:10px;justify-items:start}
+.fout[hidden]{display:none}
+.fout p{margin:0}
+.fout .fr{font-size:clamp(17px,1.9vw,21px)}
+.fout .fr b{color:var(--gold);font-weight:600}
+.fout .fp{color:var(--muted)}
+.fout .fp span{color:var(--paper);font-weight:600}
+.fout .ft{font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-top:6px}
+.fout ul{list-style:none;padding:0;margin:0;display:grid;gap:8px}
+.fout li{position:relative;padding-left:24px;color:var(--paper);opacity:.92}
+.fout li::before{content:"";position:absolute;left:0;top:.5em;width:9px;height:9px;border-radius:50%;border:2px solid var(--gold)}
+.fout .fcta{margin-top:8px}
 
 .stack>.svc:nth-child(1){--i:0}
 .stack>.svc:nth-child(2){--i:1}
