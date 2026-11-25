@@ -8,9 +8,26 @@ const NARXLAR = {
 };
 /* ========================================================= */
 
+/* til: sahifaning <html lang> qiymatidan olinadi (uz / ru / en) */
+const LANG = (document.documentElement.lang || 'uz').slice(0, 2);
+const TEXTS = {
+  uz: { free: 'Bepul', cur: "so'm", sep: '\u00a0', approx: 'Taxminiy narx: ',
+        nFree: 'Qisqa maslahat matnda, Telegram orqali, bepul.',
+        nUrgent: p => `Shoshilinch: asosiy narxga +${p}%. Aniq summa Telegramda kelishiladi.`,
+        nBase: 'Oraliqdagi aniq summa Telegramda kelishiladi.' },
+  ru: { free: 'Бесплатно', cur: 'сум', sep: '\u00a0', approx: 'Ориентировочная цена: ',
+        nFree: 'Краткая консультация в текстовом виде, через Telegram, бесплатно.',
+        nUrgent: p => `Срочно: +${p}% к основной цене. Точная сумма согласовывается в Telegram.`,
+        nBase: 'Точная сумма в этом диапазоне согласовывается в Telegram.' },
+  en: { free: 'Free', cur: 'UZS', sep: ',', approx: 'Estimated price: ',
+        nFree: 'A short consultation by text message on Telegram is free.',
+        nUrgent: p => `Urgent: +${p}% on the base price. The exact amount is agreed on Telegram.`,
+        nBase: 'The exact amount within the range is agreed on Telegram.' }
+};
+const T = TEXTS[LANG] || TEXTS.uz;
 const hasGsap = !!(window.gsap && window.ScrollTrigger);
 const reduceMq = window.matchMedia('(prefers-reduced-motion: reduce)');
-const fmt = n => String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+const fmt = n => String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, T.sep);
 const mult = urgent => urgent ? 1 + NARXLAR.shoshilinchFoiz / 100 : 1;
 function range(key, urgent){
   if (key === 'maslahat') return null;
@@ -18,8 +35,9 @@ function range(key, urgent){
   return NARXLAR[key].map(v => v * k);
 }
 function label(r){
-  if (!r) return 'Bepul';
-  return r.length === 1 ? `${fmt(r[0])} so'm` : `${fmt(r[0])}–${fmt(r[1])} so'm`;
+  const sp = LANG === 'en' ? ' ' : '\u00a0';
+  if (!r) return T.free;
+  return r.length === 1 ? `${fmt(r[0])}${sp}${T.cur}` : `${fmt(r[0])}–${fmt(r[1])}${sp}${T.cur}`;
 }
 
 /* narxlarni sahifaga yozish (bitta manba) */
@@ -40,9 +58,9 @@ function renderCalc(){
   const { key, urgent } = current();
   const r = range(key, urgent);
   outnote.textContent = key === 'maslahat'
-    ? 'Qisqa maslahat matnda, Telegram orqali, bepul.'
-    : (urgent ? `Shoshilinch: asosiy narxga +${NARXLAR.shoshilinchFoiz}%. Aniq summa Telegramda kelishiladi.` : 'Oraliqdagi aniq summa Telegramda kelishiladi.');
-  live.textContent = 'Taxminiy narx: ' + label(r);
+    ? T.nFree
+    : (urgent ? T.nUrgent(NARXLAR.shoshilinchFoiz) : T.nBase);
+  live.textContent = T.approx + label(r);
   const to = r ? r.slice() : null;
   if (!hasGsap || reduceMq.matches || !shown || !to || shown.length !== to.length){
     big.textContent = label(r); shown = to; return;
@@ -56,6 +74,9 @@ function renderCalc(){
 document.querySelectorAll('input[name="tur"], #urgent').forEach(i => i.addEventListener('change', renderCalc));
 shown = (range(current().key, false) || null);
 renderCalc();
+
+/* til almashtirganda bo'lim (#) saqlansin */
+document.querySelectorAll('.lang a').forEach(a => a.addEventListener('click', () => { if (location.hash) a.href = a.getAttribute('href').split('#')[0] + location.hash; }));
 
 /* savol-javob */
 document.querySelectorAll('.q button').forEach(btn => {
